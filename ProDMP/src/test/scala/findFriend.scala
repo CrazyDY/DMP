@@ -1,4 +1,5 @@
 import com.dmp.tools.GlobalConfigUtils
+import org.apache.log4j.{Level, Logger}
 import org.apache.spark.graphx.{Edge, Graph, VertexId, VertexRDD}
 import org.apache.spark.rdd.RDD
 import org.apache.spark.{SparkConf, SparkContext}
@@ -8,6 +9,8 @@ import org.apache.spark.{SparkConf, SparkContext}
   */
 object findFriend {
   def main(args: Array[String]): Unit = {
+    Logger.getLogger("org.apache.spark").setLevel(Level.WARN)
+    Logger.getLogger("org.eclipse.jetty.server").setLevel(Level.OFF)
     @transient
     val sparkConf = new SparkConf().setAppName("APP")
       .setMaster("local[6]")
@@ -47,12 +50,12 @@ object findFriend {
     //边的关系
     graph.edges.foreach(println)
     //点和边的数量
-    graph.numEdges
-    graph.numVertices
+    println(graph.numEdges)
+    println(graph.numVertices)
     //TODO 构建连通图
     //(userid , aggid)
     val vertices: VertexRDD[VertexId] = graph.connectedComponents().vertices
-//    vertices.foreach(println)
+    vertices.foreach(println)
         //1:[2：李四、王五、赵六...] 9：[tom\jerry\\\]
 //    val mapdata: RDD[(VertexId, List[VertexId])] = vertices.map(line => (line._2 , List(line._1)))
 //    val result: RDD[(VertexId, List[VertexId])] = mapdata.reduceByKey(_ ++ _)
